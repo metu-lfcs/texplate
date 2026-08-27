@@ -1,0 +1,110 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat <<'EOF'
+Usage:
+  scripts/new-tex-section [-s|--subfiles] PATH
+
+Create a TeX section file at PATH.
+
+Options:
+  -s, --subfiles  Create an independently compilable subfiles document.
+  -h, --help      Show this help message.
+EOF
+}
+
+subfiles=false
+target=""
+
+while (($#)); do
+  case "$1" in
+    -s|--subfiles)
+      subfiles=true
+      shift
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    --)
+      shift
+      break
+      ;;
+    -*)
+      printf 'Error: unknown option: %s\n\n' "$1" >&2
+      usage >&2
+      exit 2
+      ;;
+    *)
+      if [[ -n "$target" ]]; then
+        printf 'Error: expected exactly one PATH argument.\n\n' >&2
+        usage >&2
+        exit 2
+      fi
+      target="$1"
+      shift
+      ;;
+  esac
+done
+
+if (($#)) || [[ -z "$target" ]]; then
+  printf 'Error: expected exactly one PATH argument.\n\n' >&2
+  usage >&2
+  exit 2
+fi
+
+if [[ "$target" != *.tex ]]; then
+  target="${target}.tex"
+fi
+
+if [[ -e "$target" ]]; then
+  printf 'Error: refusing to overwrite existing file: %s\n' "$target" >&2
+  exit 1
+fi
+
+target_dir="$(dirname "$target")"
+mkdir -p "$target_dir"
+
+root_file="${TEX_ROOT_FILE:-main.tex}"
+
+if [[ ! -f "$root_file" ]]; then
+  printf 'Error: root TeX file not found: %s\n' "$root_file" >&2
+  printf 'Run this command from the repository root, or set TEX_ROOT_FILE.\n' >&2
+  exit 1
+fi
+
+relative_root="$(
+  python3 - "$target_dir" "$root_file" <<'PY'
+from pathlib import Path
+import os
+import sys
+
+target_dir = Path(sys.argv[1]).resolve()
+root_file = Path(sys.argv[2]).resolve()
+
+print(os.path.relpath(root_file, target_dir).replace(os.sep, "/"))
+PY
+)"
+
+if [[ "$subfiles" == true ]]; then
+  cat > "$target" <<EOF
+% !TEX root = $relative_root
+\documentclass[$relative_root]{subfiles}
+
+\begin{document}
+
+% TODO: Write this section.
+
+\end{document}
+EOF
+else
+  cat > "$target" <<EOF
+% !TEX root = $relative_root
+
+% TODO: Write this section.
+EOF
+fi
+
+printf 'Created %s\n' "$target"
+printf 'Root document: %s\n' "$relative_root"

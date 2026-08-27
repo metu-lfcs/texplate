@@ -1,0 +1,40 @@
+{
+  "latex-workshop.latex.outDir": "%DIR%/.build",
+
+  "latex-workshop.latex.recipe.default": "latexmk-project",
+
+  "latex-workshop.latex.tools": [
+    {
+      "name": "latexmk-project",
+      "command": "latexmk",
+      "args": [
+        "-synctex=1",
+        "%DOC%"
+      ]
+    }
+  ],
+
+  "latex-workshop.latex.recipes": [
+    {
+      "name": "latexmk-project",
+      "tools": [
+        "latexmk-project"
+      ]
+    }
+  ],
+
+  "latex-workshop.view.pdf.viewer": "tab",
+  "latex-workshop.latex.autoClean.run": "onBuilt",
+  "latex-workshop.latex.clean.fileTypes": [
+    "*.aux",
+    "*.bbl",
+    "*.bcf",
+    "*.blg",
+    "*.fdb_latexmk",
+    "*.fls",
+    "*.log",
+    "*.run.xml",
+    "*.synctex.gz",
+    "*.toc"
+  ]
+}
