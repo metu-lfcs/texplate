@@ -1,0 +1,72 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lfcs}[2026/08/26 Shared paper configuration]
+
+\RequirePackage{amsmath}
+\RequirePackage{amsthm}
+\RequirePackage{mathtools}
+\RequirePackage{fontspec}
+\RequirePackage{unicode-math}
+% \RequirePackage{lua-unicode-math} % test this later
+\unimathsetup{
+  math-style = ISO,
+  bold-style = ISO,
+  nabla = upright,
+  partial = upright
+}
+
+% Text fonts
+\setmainfont{Libertinus Serif}[
+  Ligatures = TeX,
+  Numbers = {OldStyle, Proportional}
+]
+
+\setsansfont{Libertinus Sans}[
+  Ligatures = TeX,
+  Scale = MatchLowercase
+]
+
+\setmonofont{Libertinus Mono}[
+  Scale = MatchLowercase
+]
+
+% Mathematics
+\setmathfont{Libertinus Math}
+
+% Microtypographic refinement
+\RequirePackage{microtype}
+
+
+% Figures, tables, colour
+\RequirePackage{graphicx}
+\RequirePackage{xcolor}
+\RequirePackage{booktabs}
+\RequirePackage{tabularx}
+
+% Bibliography
+\RequirePackage[
+  backend=biber,
+  style=authoryear,
+  sorting=nyt
+]{biblatex}
+\addbibresource{bib/references.bib}
+
+% Hyperlinks: load near the end
+\RequirePackage[
+  colorlinks=true,
+  linkcolor=blue,
+  citecolor=blue,
+  urlcolor=blue
+]{hyperref}
+\RequirePackage[nameinlink,noabbrev]{cleveref}
+
+% Colloboration (notes)
+\usepackage[colorinlistoftodos,
+prependcaption,
+textsize=tiny,
+backgroundcolor=orange!30,
+textwidth=80pt]{todonotes}
+
+\input{tex/metadata}
+\input{tex/macros}
+
+\endinput
