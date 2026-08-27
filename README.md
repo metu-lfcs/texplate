@@ -1,19 +1,30 @@
 # texplate
 
-Source files and reproducible build workflow papers written at METU `lfcs`.
 
-## Prerequisites
+A reproducible starting point for writing an academic paper collaboratively
+with Git and LaTeX, at METU `lfcs`.
 
-Install the following tools:
+## Create a paper repository
 
-- A TeX distribution with **LuaLaTeX**, `latexmk`, and `biber`
-  - macOS: MacTeX or BasicTeX plus the required TeX Live packages
-  - Linux: TeX Live
-  - Windows: MiKTeX or TeX Live
+Create a new repository from this template using your forge’s template feature.
+
+- **GitHub:** select **Use this template**.
+- **Codeberg:** create a new repository and select this repository in the **Template** field.
+
+The resulting repository is independent of this template. Rename it, replace
+the placeholder metadata, and adapt or remove example files as needed.
+
+
+## Requirements
+
+Install:
+
+- A TeX distribution with LuaLaTeX, `latexmk`, and Biber
 - GNU Make
 - Bash
-- Python 3, used by `make section` to calculate the correct relative root path
-- Optional: VS Code with the [LaTeX Workshop](https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop) extension
+- Python 3 (used by the section-generation command)
+- Editor suggestions: `neovim` or VS Code (with, if you like, [LaTeX Workshop](https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop) extension).
+
 
 Verify the key TeX tools are available:
 
@@ -24,6 +35,19 @@ biber --version
 make --version
 python3 --version
 ```
+
+## Collaboration conventions
+
+- Protect `main`: do not push directly to it.
+- Create a short-lived branch for each coherent change.
+- Push your changes to that branch and open a pull request for review.
+- Always delete the branch after merge.
+- Do not commit generated files from `latex/.build/` (`.gitignore` already
+  handles this, don't interfere).
+- Keep commits focused: avoid combining prose revisions, bibliography changes,
+  formatting changes, and unrelated refactoring in one commit.
+- Best is to have each sentence on its own line, try your best. Or use
+  `latexindent` if/when you get experienced with LaTeX.
 
 ## Project layout
 
@@ -40,7 +64,7 @@ python3 --version
 ├── sections/                  # Paper text, split by section
 ├── tables/                    # LaTeX table fragments
 ├── figures/                   # Images and diagrams used in the paper
-├── bibliography/
+├── bib/
 │   └── references.bib         # BibLaTeX bibliography database
 ├── scripts/
 │   └── new-tex-section        # Repository-local section-file generator
@@ -67,7 +91,10 @@ The project uses `latexmk` with **LuaLaTeX**. All auxiliary and generated build 
 
 ### Continuous compilation
 
-Use this while writing:
+If you're on `neovim`, use `vimtex`. I'm sure VS Code means for continuous
+development, but you need to discover it yourself.
+
+If the above do not apply, use this while writing:
 
 ```sh
 make watch
@@ -91,9 +118,9 @@ Remove all generated output, including the PDF:
 make distclean
 ```
 
-## Creating section files
+Cleaning is your friend when LaTeX gets jammed.
 
-Do not install the section generator globally. It is included in this repository and is invoked through `make`.
+## Creating section files
 
 Create a standard section file:
 
@@ -137,9 +164,7 @@ The command creates missing directories and refuses to overwrite an existing fil
 
 ### Independently compilable subfiles
 
-This project normally uses `\input` and builds only `main.tex`.
-
-If the project uses the `subfiles` package and a section should also compile independently, create it with:
+If your project will  use the `subfiles` package and a section should also compile independently, create it with:
 
 ```sh
 make subfile SECTION=sections/03-methods
@@ -173,15 +198,12 @@ For ordinary section files, use:
 ## Editing conventions
 
 - Write paper prose in `sections/`.
-- Keep `main.tex` limited to the document class, global configuration, document order, title, abstract, bibliography, and appendices.
-- Put package declarations, formatting, and shared configuration in `tex/paper.sty`.
-- Put shared commands in `tex/macros.tex`.
-- Put mathematical notation in `tex/notation.tex`.
-- Put bibliography entries in `bibliography/references.bib`.
+- Put shared local commands in `tex/macros.tex`.
+- Put custom mathematical notation in `tex/notation.tex`.
+- Put bibliography entries in `bib/references.bib`.
 - Put table source in `tables/` and include it with `\input{tables/<name>}`.
 - Put figures in `figures/` and reference them using project-relative paths.
 - Do not add `\documentclass`, `\usepackage`, `\begin{document}`, or `\end{document}` to standard files under `sections/`.
-- Do not commit `.build/` or other generated LaTeX files.
 
 ## VS Code
 
@@ -211,25 +233,4 @@ make section SECTION=sections/03-methods
 make section SECTION=sections/appendices/proofs
 
 make subfile SECTION=sections/03-methods
-```
-
-## Git workflow
-
-Before opening a pull request or merging another contributor’s work:
-
-```sh
-make pdf
-git status
-```
-
-Only source files, configuration files, figures, tables, and bibliography data should normally appear as changed files. If `.build/` appears in `git status`, ensure it is ignored:
-
-```gitignore
-.build/
-```
-
-When adding a new section, create the file and then add it to `main.tex` at the intended location:
-
-```tex
-\input{sections/03-methods}
 ```
