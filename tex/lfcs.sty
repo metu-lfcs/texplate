@@ -6,7 +6,7 @@
 \RequirePackage{mathtools}
 \RequirePackage{fontspec}
 \RequirePackage{unicode-math}
-% \RequirePackage{lua-unicode-math} % test this later
+
 \unimathsetup{
   math-style = ISO,
   bold-style = ISO,
@@ -14,25 +14,8 @@
   partial = upright
 }
 
-% Text fonts
-\setmainfont{Libertinus Serif}[
-  Ligatures = TeX,
-  Numbers = {OldStyle, Proportional}
-]
-
-\setsansfont{Libertinus Sans}[
-  Ligatures = TeX,
-  Scale = MatchLowercase
-]
-
-\setmonofont{Libertinus Mono}[
-  Scale = MatchLowercase
-]
-
-% Mathematics
-\setmathfont{Libertinus Math}
-
-% Microtypographic refinement
+\setmainfont{TeX Gyre Termes}
+\setmathfont{TeX Gyre Termes Math}
 \RequirePackage{microtype}
 
 
@@ -43,14 +26,13 @@
 \RequirePackage{tabularx}
 
 % Bibliography
-\RequirePackage[
-  backend=biber,
-  style=authoryear,
-  sorting=nyt
-]{biblatex}
+\RequirePackage[useprefix=true, style=apa, sortcites=false,
+  sorting=nyt, uniquename=false, uniquelist=false, backend=biber,
+  hyperref=true]{biblatex}
 \addbibresource{bib/references.bib}
 
 % Hyperlinks: load near the end
+
 \RequirePackage[
   colorlinks=true,
   linkcolor=blue,
